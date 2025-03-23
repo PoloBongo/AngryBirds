@@ -12,6 +12,7 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private GameObject player;
 
     private Vector3 currentPosition { get; set; }
+    public float angleShot { get; private set; }
     public bool IsLaunch { get; set; }
     
     private new Camera camera;
@@ -38,6 +39,13 @@ public class Slingshot : MonoBehaviour
     {
         player.GetComponent<Rigidbody2D>().gravityScale = 1f;
     }
+    
+    private float GetSlingshotAngle()
+    {
+        Vector3 direction = center.position - currentPosition;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        return angle;
+    }
 
     private void Update()
     {
@@ -48,6 +56,8 @@ public class Slingshot : MonoBehaviour
                 Vector3 mousePosition = Input.mousePosition;
                 mousePosition.z = 10;
             
+                Debug.Log("Angle du slingshot : " + GetSlingshotAngle() + "°");
+                
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
                 currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
                 player.transform.position = currentPosition;
@@ -56,6 +66,7 @@ public class Slingshot : MonoBehaviour
             }
             else
             {
+                angleShot = GetSlingshotAngle();
                 IsLaunch = true;
                 EnableGravity();
                 ResetStrips();
