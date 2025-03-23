@@ -91,7 +91,7 @@ public class Slingshot : MonoBehaviour
     private float GetLineRendererLength(LineRenderer lineRenderer)
     {
         if (lineRenderer.positionCount < 2)
-            return 0f; // Évite une erreur si le LineRenderer n'a pas assez de points
+            return 0f;
 
         Vector3 start = lineRenderer.GetPosition(0);
         Vector3 end = lineRenderer.GetPosition(1);
