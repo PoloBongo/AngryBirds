@@ -35,8 +35,10 @@ public class GestionLaunchBird : MonoBehaviour
     {
         if (slingshot.IsLaunch)
         {
-            birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, false);
-            trajectoryPoints = birdTrajectory.ComputeTrajectoryWithoutFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot);
+            birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, birdTrajectory.GetUseFriction());
+            trajectoryPoints = birdTrajectory.GetUseFriction() ?
+                birdTrajectory.ComputeTrajectoryWithFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot)
+                : birdTrajectory.ComputeTrajectoryWithoutFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot);
                     
             birdTrajectory.LaunchBird(slingshot.angleShot, slingshot.powerShot);
                     
