@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5503163090176109715}
   - component: {fileID: 619257743837915198}
   m_Layer: 0
-  m_Name: GestionInput
+  m_Name: GestionLaunchBird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
