@@ -68,9 +68,7 @@ public class Slingshot : MonoBehaviour
             else
             {
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
-                frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));  // Utilisation de Mathf.Pow pour rendre la progression plus douce
-                Debug.Log(frictionShot);
-                Debug.Log(powerShot);
+                frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
                 angleShot = GetSlingshotAngle();
                 IsLaunch = true;
                 EnableGravity();
