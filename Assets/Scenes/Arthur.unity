@@ -2591,12 +2591,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3436919542325141839, guid: 2b166c4dc6627c1458cdefb3db34a99a,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: f89230966a169f143895ebc711f92ab5,
-        type: 3}
     - target: {fileID: 3803971486156123695, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2647,15 +2641,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: slingshot
+      value: 
+      objectReference: {fileID: 1468697201}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

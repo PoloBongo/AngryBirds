@@ -15,6 +15,7 @@ public class Slingshot : MonoBehaviour
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
     public float powerShot { get; private set; }
+    public float frictionShot { get; private set; } // coeff de frottement divisé par la masse
     public bool IsLaunch { get; set; }
     
     private new Camera camera;
@@ -67,6 +68,7 @@ public class Slingshot : MonoBehaviour
             else
             {
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
+                frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
                 angleShot = GetSlingshotAngle();
                 IsLaunch = true;
                 EnableGravity();
