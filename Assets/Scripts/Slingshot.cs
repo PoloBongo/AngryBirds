@@ -10,9 +10,11 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private Transform idlePosition;
     [SerializeField] private float maxLength;
     [SerializeField] private GameObject player;
+    [SerializeField] private float powerMultiplication = 1.75f;
 
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
+    public float powerShot { get; private set; }
     public bool IsLaunch { get; set; }
     
     private new Camera camera;
@@ -55,8 +57,6 @@ public class Slingshot : MonoBehaviour
             {
                 Vector3 mousePosition = Input.mousePosition;
                 mousePosition.z = 10;
-            
-                Debug.Log("Angle du slingshot : " + GetSlingshotAngle() + "°");
                 
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
                 currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
@@ -66,6 +66,7 @@ public class Slingshot : MonoBehaviour
             }
             else
             {
+                powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 angleShot = GetSlingshotAngle();
                 IsLaunch = true;
                 EnableGravity();
@@ -85,5 +86,16 @@ public class Slingshot : MonoBehaviour
     {
         lineRenderers[0].SetPosition(1, _position);
         lineRenderers[1].SetPosition(1, _position);
+    }
+    
+    private float GetLineRendererLength(LineRenderer lineRenderer)
+    {
+        if (lineRenderer.positionCount < 2)
+            return 0f; // Évite une erreur si le LineRenderer n'a pas assez de points
+
+        Vector3 start = lineRenderer.GetPosition(0);
+        Vector3 end = lineRenderer.GetPosition(1);
+
+        return Vector3.Distance(start, end);
     }
 }

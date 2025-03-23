@@ -35,10 +35,10 @@ public class GestionLaunchBird : MonoBehaviour
     {
         if (slingshot.IsLaunch)
         {
-            birdTrajectory.DrawTrajectory(slingshot.angleShot, 8f, false);
-            trajectoryPoints = birdTrajectory.ComputeTrajectoryWithoutFriction(slingshot.angleShot * Mathf.Deg2Rad, 8f);
+            birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, false);
+            trajectoryPoints = birdTrajectory.ComputeTrajectoryWithoutFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot);
                     
-            birdTrajectory.LaunchBird(slingshot.angleShot, 8f);
+            birdTrajectory.LaunchBird(slingshot.angleShot, slingshot.powerShot);
                     
             // reset pour le prochain lancer
             trajectoryPoints.Clear();
