@@ -70,6 +70,8 @@ public class Slingshot : MonoBehaviour
     
     private void Update()
     {
+        if (manageBirds.Index >= manageBirds.Birds.Count) return;
+        
         foreach (var touch in Touch.activeTouches)
         {
             if (touch.inProgress)
@@ -77,6 +79,10 @@ public class Slingshot : MonoBehaviour
                 Vector3 mousePosition = touch.screenPosition;
                 mousePosition.z = 10;
                 
+                powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
+                angleShot = GetSlingshotAngle();
+                
+                manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, manageBirds.Birds[manageBirds.Index].GetUseFriction());
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
                 currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
                 player.transform.position = currentPosition;
@@ -87,9 +93,7 @@ public class Slingshot : MonoBehaviour
             {
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
-                powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
-                angleShot = GetSlingshotAngle();
                 IsLaunch = true;
                 EnableGravity();
                 ResetStrips();
