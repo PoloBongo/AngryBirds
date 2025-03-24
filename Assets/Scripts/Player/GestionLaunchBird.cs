@@ -31,6 +31,12 @@ public class GestionLaunchBird : MonoBehaviour
         Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
     }
 
+    public void SwitchBirdTarget(GameObject _newBirdObj)
+    {
+        birdObject = _newBirdObj;
+        birdTrajectory = _newBirdObj.GetComponent<BirdTrajectory>();
+    }
+
     public void Update()
     {
         if (slingshot.IsLaunch)
@@ -46,5 +52,10 @@ public class GestionLaunchBird : MonoBehaviour
             trajectoryPoints.Clear();
             slingshot.IsLaunch = false;
         }
+    }
+
+    public void ClearDrawTrajectory(BirdTrajectory _birdTrajectory)
+    {
+        _birdTrajectory.GetLineRenderer().positionCount = 0;
     }
 }

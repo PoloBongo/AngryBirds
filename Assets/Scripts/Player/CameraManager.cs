@@ -1,3 +1,4 @@
+using System;
 using Cinemachine;
 using UnityEngine;
 
@@ -7,6 +8,16 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform idlePosition;
 
+    private void Start()
+    {
+        SwitchFollowToIdlePos();
+    }
+
+    public void SwitchFollowBird(Transform _newFollowBird)
+    {
+        playerTransform = _newFollowBird;
+    }
+    
     public void SwitchFollowToPlayer()
     {
         vcam.Follow = playerTransform;
