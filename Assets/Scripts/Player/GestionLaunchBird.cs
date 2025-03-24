@@ -10,8 +10,8 @@ public class GestionLaunchBird : MonoBehaviour
     
     [Header("Property")]
     [SerializeField] private BirdTrajectory birdTrajectory;
-    [SerializeField] private GameObject birdObject;
     [SerializeField] private Slingshot slingshot;
+    [SerializeField] private RenderTrajectory renderTrajectory;
     
     [Header("Bird Property")]
     private List<Vector3> trajectoryPoints;
@@ -34,18 +34,19 @@ public class GestionLaunchBird : MonoBehaviour
 
     public void SwitchBirdTarget(GameObject _newBirdObj)
     {
-        birdObject = _newBirdObj;
         birdTrajectory = _newBirdObj.GetComponent<BirdTrajectory>();
+        renderTrajectory.SwitchBirdTarget(_newBirdObj.transform);
     }
 
     public void Update()
     {
         if (slingshot.IsLaunch)
         {
-            birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, birdTrajectory.GetUseFriction());
+            //birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, birdTrajectory.GetUseFriction());
             birdTrajectory.LaunchBird(slingshot.angleShot, slingshot.powerShot);
                     
             // reset pour le prochain lancer
+            renderTrajectory.ResetPoints();
             slingshot.IsLaunch = false;
         }
     }

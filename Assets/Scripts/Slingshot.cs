@@ -97,7 +97,7 @@ public class Slingshot : MonoBehaviour
                 IsLaunch = true;
                 EnableGravity();
                 ResetStrips();
-                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Index == 0 ? manageBirds.Birds[0] : manageBirds.Birds[manageBirds.Index - 1]);
+                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
             }
         }
     }
