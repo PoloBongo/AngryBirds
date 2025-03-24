@@ -18,6 +18,7 @@ public class BirdTrajectory : MonoBehaviour
     [SerializeField] private bool useFriction = false;
 
     public bool GetUseFriction() => useFriction;
+    public LineRenderer GetLineRenderer() => lineRenderer;
     private void Start()
     {
         mass = rigidBody2D.mass; // masse de l'oiseau (kg)
