@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class GestionLaunchBird : MonoBehaviour
 {
@@ -42,14 +43,9 @@ public class GestionLaunchBird : MonoBehaviour
         if (slingshot.IsLaunch)
         {
             birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, birdTrajectory.GetUseFriction());
-            trajectoryPoints = birdTrajectory.GetUseFriction() ?
-                birdTrajectory.ComputeTrajectoryWithFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot)
-                : birdTrajectory.ComputeTrajectoryWithoutFriction(slingshot.angleShot * Mathf.Deg2Rad, slingshot.powerShot);
-                    
             birdTrajectory.LaunchBird(slingshot.angleShot, slingshot.powerShot);
                     
             // reset pour le prochain lancer
-            trajectoryPoints.Clear();
             slingshot.IsLaunch = false;
         }
     }

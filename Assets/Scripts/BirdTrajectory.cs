@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BirdTrajectory : MonoBehaviour
@@ -44,7 +45,7 @@ public class BirdTrajectory : MonoBehaviour
         return v_eject;
     }
 
-    public List<Vector3> ComputeTrajectoryWithoutFriction(float angle, float velocity)
+    private List<Vector3> ComputeTrajectoryWithoutFriction(float angle, float velocity)
     {
         List<Vector3> points = new List<Vector3>(); // stock le x,y
         float gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute
@@ -61,7 +62,7 @@ public class BirdTrajectory : MonoBehaviour
         return points;
     }
 
-    public List<Vector3> ComputeTrajectoryWithFriction(float angle, float velocity)
+    private List<Vector3> ComputeTrajectoryWithFriction(float angle, float velocity)
     {
         List<Vector3> points = new List<Vector3>(); // stock le x,y
         float gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute
@@ -91,6 +92,27 @@ public class BirdTrajectory : MonoBehaviour
         float velocityX = useFriction ? adjustedVelocity * Mathf.Cos(angle) : velocity * Mathf.Cos(angle);
         float velocityY = useFriction ? adjustedVelocity * Mathf.Sin(angle) : velocity * Mathf.Sin(angle);
         rigidBody2D.velocity = new Vector2(velocityX, velocityY);
+    }
+    
+    public List<Vector3> ComputeTrajectoryRecurrence(float angle, float stretchLength)
+    {
+        float velocity = SpeedInitial(angle, stretchLength);
+        float dt = 0.01f;
+        float x = 0;
+        float y = 0;
+        List<Vector3> points = new List<Vector3>();
+        float velocity_x = velocity * Mathf.Cos(angle);
+        float velocity_y = velocity * Mathf.Sin(angle);
+
+        while (points[-1].magnitude >= 0)
+        {
+            x += velocity_x * dt;
+            y += velocity_y * dt;
+            points.Add(new Vector3(x, y, 0));
+            velocity_y += -Physics2D.gravity.y * dt;
+        }
+
+        return points;
     }
 
 }
