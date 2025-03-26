@@ -617,7 +617,7 @@ Transform:
   m_GameObject: {fileID: 303129640}
   serializedVersion: 2
   m_LocalRotation: {x: -0.052151747, y: 0.03683348, z: -0.0018917357, w: -0.9979579}
-  m_LocalPosition: {x: 0.01, y: 0, z: -10}
+  m_LocalPosition: {x: -1.11, y: -1.24, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -728,7 +728,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: -0.052151747, y: 0.03683348, z: -0.0018917357, w: -0.9979579}
-  m_LocalPosition: {x: 0.01, y: 0, z: -10}
+  m_LocalPosition: {x: -1.11, y: -1.24, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -830,7 +830,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &342661205
 Rigidbody2D:
   serializedVersion: 4
@@ -1000,7 +1000,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &373482878
 Rigidbody2D:
   serializedVersion: 4
@@ -1406,7 +1406,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &551216547
 Rigidbody2D:
   serializedVersion: 4
@@ -1564,7 +1564,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &579450173
 Rigidbody2D:
   serializedVersion: 4
@@ -1975,7 +1975,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &815990123
 Rigidbody2D:
   serializedVersion: 4
@@ -2342,7 +2342,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1425170160
 Rigidbody2D:
   serializedVersion: 4
@@ -2572,6 +2572,11 @@ PrefabInstance:
       propertyPath: useFriction
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: lineRenderer2
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Name
@@ -2681,7 +2686,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1577409318
 Rigidbody2D:
   serializedVersion: 4
@@ -2839,7 +2844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1681909619
 Rigidbody2D:
   serializedVersion: 4
@@ -3056,7 +3061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &2002750526
 Rigidbody2D:
   serializedVersion: 4
@@ -3463,6 +3468,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 233138328}
     m_Modifications:
+    - target: {fileID: 1528192935151982992, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1528192935151982992, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3100065863705218003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Parameters.alignment
@@ -3471,12 +3486,12 @@ PrefabInstance:
     - target: {fileID: 3803971486156123695, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.12
       objectReference: {fileID: 0}
     - target: {fileID: 3803971486156123695, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.24
       objectReference: {fileID: 0}
     - target: {fileID: 3803971486156123695, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
@@ -3527,6 +3542,11 @@ PrefabInstance:
         type: 3}
       propertyPath: useFriction
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: lineRenderer2
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
