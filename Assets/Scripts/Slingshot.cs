@@ -33,6 +33,7 @@ public class Slingshot : MonoBehaviour
         lineRenderers[1].positionCount = 2;
         lineRenderers[0].SetPosition(0, stripPositions[0].position);
         lineRenderers[1].SetPosition(0, stripPositions[1].position);
+        frictionShot = 0.2f;
 
         DisableGravity();
         ResetStrips();
@@ -52,6 +53,12 @@ public class Slingshot : MonoBehaviour
     {
         Vector3 direction = center.position - currentPosition;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        const float minAngle = 0.1f;
+        if (Mathf.Abs(angle) < minAngle)
+        {
+            angle = Mathf.Sign(angle) * minAngle;
+        }
+
         return angle;
     }
 
@@ -79,12 +86,13 @@ public class Slingshot : MonoBehaviour
                 Vector3 mousePosition = touch.screenPosition;
                 mousePosition.z = 10;
                 
+                currentPosition = camera.ScreenToWorldPoint(mousePosition);
+                currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
+                
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 angleShot = GetSlingshotAngle();
                 
                 manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, manageBirds.Birds[manageBirds.Index].GetUseFriction());
-                currentPosition = camera.ScreenToWorldPoint(mousePosition);
-                currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
                 player.transform.position = currentPosition;
                 
                 SetStrips(currentPosition);
@@ -93,7 +101,7 @@ public class Slingshot : MonoBehaviour
             {
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
-                frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
+                //frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
                 IsLaunch = true;
                 EnableGravity();
                 ResetStrips();
@@ -102,7 +110,7 @@ public class Slingshot : MonoBehaviour
         }
     }
 
-    public void ResetStrips()
+    private void ResetStrips()
     {
         currentPosition = idlePosition.position;
         SetStrips(currentPosition);

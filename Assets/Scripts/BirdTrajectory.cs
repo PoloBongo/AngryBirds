@@ -8,6 +8,7 @@ public class BirdTrajectory : MonoBehaviour
 {
     [Header("Property")]
     [SerializeField] private float mass;
+    [SerializeField] private float gravity;
     [SerializeField] private float spring = 10f; // constante de raideur du ressort (N/m)
     
     [Header("Components")]
@@ -22,6 +23,7 @@ public class BirdTrajectory : MonoBehaviour
     public LineRenderer GetLineRenderer() => lineRenderer;
     private void Start()
     {
+        gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute (c'est la même valeur soit 9.81f)
         mass = rigidBody2D.mass; // masse de l'oiseau (kg)
     }
 
@@ -48,7 +50,6 @@ public class BirdTrajectory : MonoBehaviour
     private List<Vector3> ComputeTrajectoryWithoutFriction(float angle, float velocity)
     {
         List<Vector3> points = new List<Vector3>(); // stock le x,y
-        float gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute
         float timeMax = (2 * velocity * Mathf.Sin(angle)) / gravity; // temps d'impact avec le sol
         float timeStep = timeMax / numPoints; // divise le temps entre chaque point de la trajectoire
 
@@ -65,19 +66,38 @@ public class BirdTrajectory : MonoBehaviour
     private List<Vector3> ComputeTrajectoryWithFriction(float angle, float velocity)
     {
         List<Vector3> points = new List<Vector3>(); // stock le x,y
-        float gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute
         float lambdaX = velocity * Mathf.Cos(angle); // vitesse horizontal
         float lambdaY = velocity * Mathf.Sin(angle) + gravity / slingshot.frictionShot; // vitesse vertical en prenant compte de la résistance de l'air
-        float timeMax = (2 * velocity * Mathf.Sin(angle)) / gravity; // temps d'impact avec le sol
+        float timeMax = 2 * velocity * Mathf.Sin(angle) / gravity; // temps d'impact avec le sol
         float timeStep = timeMax / numPoints; // divise le temps entre chaque point de la trajectoire
-
+        
         for (int i = 0; i < numPoints; i++)
         {
             float t = i * timeStep;
             float x = (lambdaX / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t)); // pos horizontal
             float y = (lambdaY / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t)) - (gravity / slingshot.frictionShot) * t; // pos vertical
+            
             points.Add(new Vector3(x, y, 0)); // stock les points x,y pour les draw ensuite
         }
+        return points;
+    }
+    
+    private List<Vector3> ComputeJumpTrajectory(float jumpForce, float velocity, float angle)
+    {
+        List<Vector3> points = new List<Vector3>();
+        float timeMax = (2 * jumpForce) / gravity;  // Calcul du temps de vol total sous l'effet de la gravité
+        float timeStep = timeMax / numPoints;
+        float velocityX = velocity * Mathf.Cos(angle);
+
+        for (int i = 0; i < numPoints; i++)
+        {
+            float t = i * timeStep;  // Calcul du temps actuel
+            float x = rigidBody2D.position.x + velocityX * t;  // Calcul de la position horizontale
+            float y = rigidBody2D.position.y + jumpForce * t - 0.5f * gravity * t * t;  // Calcul de la position verticale sous la gravité
+
+            points.Add(new Vector3(x, y, 0));  // Ajout des coordonnées dans la liste des points
+        }
+
         return points;
     }
     
@@ -85,7 +105,7 @@ public class BirdTrajectory : MonoBehaviour
     {
         float angle = angleDegrees * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, stretchLength);
-        float adjustedVelocity = velocity * (1 - slingshot.frictionShot);
+        float adjustedVelocity = velocity * (1 - slingshot.frictionShot + 0.05f);
 
         // applique la vitesse au rigidbody pour simuler la physique sur la trajectoire
         // - cela permet de laisser unity gérer la collision avec les autres objects
