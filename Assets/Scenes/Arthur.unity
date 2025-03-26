@@ -507,6 +507,7 @@ GameObject:
   m_Component:
   - component: {fileID: 233138328}
   - component: {fileID: 233138329}
+  - component: {fileID: 233138330}
   m_Layer: 0
   m_Name: Birds
   m_TagString: Untagged
@@ -551,6 +552,19 @@ MonoBehaviour:
   player: {fileID: 1847016498}
   poolSize: 20
   interval: 0.5
+--- !u!114 &233138330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233138327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e39d4072d3008c14ba236a0eac537875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manageBirds: {fileID: 1539425315}
 --- !u!1 &303129640
 GameObject:
   m_ObjectHideFlags: 0
@@ -2570,7 +2584,7 @@ PrefabInstance:
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: useFriction
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
