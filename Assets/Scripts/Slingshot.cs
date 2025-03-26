@@ -18,7 +18,7 @@ public class Slingshot : MonoBehaviour
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
     public float powerShot { get; private set; }
-    public float frictionShot { get; private set; } // coeff de frottement divisé par la masse
+    public float frictionShot { get; set; } // coeff de frottement divisé par la masse
     public bool IsLaunch { get; set; }
     public bool CanResetCamera { get; set; }
     
