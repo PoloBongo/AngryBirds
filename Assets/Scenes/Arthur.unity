@@ -452,6 +452,7 @@ MonoBehaviour:
   cameraManager: {fileID: 303129643}
   idlePosition: {fileID: 773190230}
   manageBirds: {fileID: 1539425315}
+  gestionLaunchBird: {fileID: 351651272}
 --- !u!1 &190571688
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,7 +845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &342661205
 Rigidbody2D:
   serializedVersion: 4
@@ -978,7 +979,7 @@ Transform:
   m_GameObject: {fileID: 342661204}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 5.6259317, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 5.6259317, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1014,7 +1015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &373482878
 Rigidbody2D:
   serializedVersion: 4
@@ -1148,7 +1149,7 @@ Transform:
   m_GameObject: {fileID: 373482877}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: -0.55406785, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: -0.55406785, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1420,7 +1421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &551216547
 Rigidbody2D:
   serializedVersion: 4
@@ -1554,7 +1555,7 @@ Transform:
   m_GameObject: {fileID: 551216546}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 4.335932, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 4.335932, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1578,7 +1579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &579450173
 Rigidbody2D:
   serializedVersion: 4
@@ -1712,7 +1713,7 @@ Transform:
   m_GameObject: {fileID: 579450172}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 1.7559321, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 1.7559321, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1886,6 +1887,11 @@ PrefabInstance:
       propertyPath: useFriction
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: detectionObstacle
+      value: 
+      objectReference: {fileID: 693267567}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Name
@@ -1905,6 +1911,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 693267563}
+    - targetCorrespondingSourceObject: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 693267567}
   m_SourcePrefab: {fileID: 100100000, guid: 2b166c4dc6627c1458cdefb3db34a99a, type: 3}
 --- !u!114 &693267560 stripped
 MonoBehaviour:
@@ -1965,6 +1975,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.64
+--- !u!50 &693267564 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 1528192935151982992, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+    type: 3}
+  m_PrefabInstance: {fileID: 693267559}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &693267567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693267562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc9d56849743a24984d505c64a8da6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slingshot: {fileID: 1468697201}
+  rigidbody2D: {fileID: 693267564}
+  birdTrajectory: {fileID: 693267560}
 --- !u!4 &773190230 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3202485291818903085, guid: 833d9e8b90a02454f89195a1ce8508a8,
@@ -1989,7 +2020,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &815990123
 Rigidbody2D:
   serializedVersion: 4
@@ -2123,7 +2154,7 @@ Transform:
   m_GameObject: {fileID: 815990122}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: -1.6140679, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: -1.6140679, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2356,7 +2387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &1425170160
 Rigidbody2D:
   serializedVersion: 4
@@ -2490,7 +2521,7 @@ Transform:
   m_GameObject: {fileID: 1425170159}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 3.065932, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 3.065932, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2584,13 +2615,18 @@ PrefabInstance:
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: useFriction
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: lineRenderer2
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: detectionObstacle
+      value: 
+      objectReference: {fileID: 1501059997}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Name
@@ -2610,6 +2646,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1501059993}
+    - targetCorrespondingSourceObject: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1501059997}
   m_SourcePrefab: {fileID: 100100000, guid: 2b166c4dc6627c1458cdefb3db34a99a, type: 3}
 --- !u!4 &1501059990 stripped
 Transform:
@@ -2670,6 +2710,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.64
+--- !u!50 &1501059995 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 1528192935151982992, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1501059989}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1501059997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501059992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc9d56849743a24984d505c64a8da6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slingshot: {fileID: 1468697201}
+  rigidbody2D: {fileID: 1501059995}
+  birdTrajectory: {fileID: 1501059991}
 --- !u!114 &1539425315 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 948637192637550624, guid: 5f35553f7d9b94b44ba7a70cbfe80909,
@@ -2700,7 +2761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &1577409318
 Rigidbody2D:
   serializedVersion: 4
@@ -2834,7 +2895,7 @@ Transform:
   m_GameObject: {fileID: 1577409317}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 8.135932, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 8.135932, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2858,7 +2919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &1681909619
 Rigidbody2D:
   serializedVersion: 4
@@ -2992,7 +3053,7 @@ Transform:
   m_GameObject: {fileID: 1681909618}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 6.925932, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 6.925932, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3057,6 +3118,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.64
+--- !u!50 &1847016501 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 1528192935151982992, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+    type: 3}
+  m_PrefabInstance: {fileID: 8401064959348249022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1847016503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847016487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdc9d56849743a24984d505c64a8da6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slingshot: {fileID: 1468697201}
+  rigidbody2D: {fileID: 1847016501}
+  birdTrajectory: {fileID: 1847016493}
 --- !u!1 &2002750525
 GameObject:
   m_ObjectHideFlags: 0
@@ -3075,7 +3157,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!50 &2002750526
 Rigidbody2D:
   serializedVersion: 4
@@ -3209,7 +3291,7 @@ Transform:
   m_GameObject: {fileID: 2002750525}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -82.05881, y: 0.585932, z: 27.580376}
+  m_LocalPosition: {x: -71.54, y: 0.585932, z: 27.580376}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3469,6 +3551,11 @@ PrefabInstance:
       propertyPath: gestionLaunchBird
       value: 
       objectReference: {fileID: 351651272}
+    - target: {fileID: 4385173790196480158, guid: 833d9e8b90a02454f89195a1ce8508a8,
+        type: 3}
+      propertyPath: enableUnityGravity
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3555,13 +3642,18 @@ PrefabInstance:
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: useFriction
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: lineRenderer2
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      propertyPath: detectionObstacle
+      value: 
+      objectReference: {fileID: 1847016503}
     - target: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: m_Name
@@ -3576,6 +3668,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1847016499}
+    - targetCorrespondingSourceObject: {fileID: 9063574696779075443, guid: 2b166c4dc6627c1458cdefb3db34a99a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1847016503}
   m_SourcePrefab: {fileID: 100100000, guid: 2b166c4dc6627c1458cdefb3db34a99a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

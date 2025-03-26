@@ -14,6 +14,7 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private ManageBirds manageBirds;
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
+    [SerializeField] private bool enableUnityGravity;
 
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
@@ -21,6 +22,8 @@ public class Slingshot : MonoBehaviour
     public float frictionShot { get; set; } // coeff de frottement divisé par la masse
     public bool IsLaunch { get; set; }
     public bool CanResetCamera { get; set; }
+    
+    public bool GetEnableUnityGravity() => enableUnityGravity;
     
     private new Camera camera;
     
@@ -103,7 +106,7 @@ public class Slingshot : MonoBehaviour
                 cameraManager.SwitchFollowToPlayer();
                 //frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
                 IsLaunch = true;
-                EnableGravity();
+                if (enableUnityGravity) EnableGravity();
                 ResetStrips();
                 gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
             }

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BirdTrajectory : MonoBehaviour
@@ -15,11 +13,19 @@ public class BirdTrajectory : MonoBehaviour
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private Rigidbody2D rigidBody2D;
     [SerializeField] private Slingshot slingshot;
+    [SerializeField] private DetectionObstacle detectionObstacle;
 
     private const int numPoints = 100;
     [SerializeField] private bool useFriction = false;
 
+    private List<Vector3> trajectoryPoints;
+    private float elapsedTime = 0f;
+    private Vector2 stockVelocity;
+    private Vector2 velocityLastPoint;
+    public bool trajectoryFinish { get; set; }
+
     public bool GetUseFriction() => useFriction;
+    public Vector2 GetStockVelocity() => stockVelocity;
     public LineRenderer GetLineRenderer() => lineRenderer;
     private void Start()
     {
@@ -33,25 +39,28 @@ public class BirdTrajectory : MonoBehaviour
         float angle = angleDegrees * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, stretchLength);
 
-        List<Vector3> points = withFriction ? 
+        trajectoryPoints = withFriction ? 
             ComputeTrajectoryWithFriction(angle, velocity) : 
             ComputeTrajectoryWithoutFriction(angle, velocity);
 
-        lineRenderer.positionCount = points.Count;
-        lineRenderer.SetPositions(points.ToArray());
+        lineRenderer.positionCount = trajectoryPoints.Count;
+        lineRenderer.SetPositions(trajectoryPoints.ToArray());
     }
     
     public void DrawTrajectoryRecurrence()
     {
         float angle = slingshot.angleShot * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, slingshot.powerShot);
+        float friction = slingshot.frictionShot;
 
-        List<Vector3> points = ComputeJumpTrajectory(10f, angle, velocity);
+        List<Vector3> points = useFriction ? 
+            ComputeJumpTrajectoryWithFriction(angle, velocity, friction)
+            : ComputeJumpTrajectoryWithoutFriction(angle, velocity);
 
         lineRenderer.positionCount = points.Count;
         lineRenderer.SetPositions(points.ToArray());
         
-        LaunchBirdJump(slingshot.angleShot, velocity);
+        LaunchBird(slingshot.angleShot, slingshot.powerShot);
     }
 
     private float SpeedInitial(float angle, float l1)
@@ -74,6 +83,7 @@ public class BirdTrajectory : MonoBehaviour
             float y = velocity * Mathf.Sin(angle) * t - 0.5f * gravity * t * t; // pos vertical
             points.Add(new Vector3(x, y, 0)); // stock les points x,y pour les draw ensuite
         }
+
         return points;
     }
 
@@ -93,56 +103,116 @@ public class BirdTrajectory : MonoBehaviour
             
             points.Add(new Vector3(x, y, 0)); // stock les points x,y pour les draw ensuite
         }
+
         return points;
     }
     
-    private List<Vector3> ComputeJumpTrajectory(float jumpForce, float angle, float velocity)
+    private List<Vector3> ComputeJumpTrajectoryWithoutFriction(float angle, float velocity)
     {
         List<Vector3> points = new List<Vector3>();
-        float timeMax = (2 * jumpForce) / gravity;
-        float timeStep = timeMax / numPoints;
+        float dt = 0.01f;
+        
+        float x = transform.position.x;
+        float y = transform.position.y;
+        
         float velocityX = velocity * Mathf.Cos(angle);
         float velocityY = velocity * Mathf.Sin(angle);
 
-        float x = 0;
-        float y = 0;
-
-        for (int i = 0; i < numPoints; i++)
+        while (y >= 0)
         {
-            float t = i * timeStep;
-            x += velocityX * 0.01f * t;
-            y += velocityY * 0.01f * t;
+            x += velocityX * dt;
+            y += velocityY * dt;
+
+            if (y < 0) break;
 
             points.Add(new Vector3(x, y, 0));
 
-            velocityY += -gravity * 0.01f * t;
+            velocityY -= gravity * dt;
         }
 
         return points;
     }
+    
+    private List<Vector3> ComputeJumpTrajectoryWithFriction(float angle, float velocity, float friction)
+    {
+        List<Vector3> points = new List<Vector3>();
+        float dt = 0.01f;
+
+        float x = transform.position.x;
+        float y = transform.position.y;
+
+        float velocityX = velocity * Mathf.Cos(angle);
+        float velocityY = velocity * Mathf.Sin(angle);
+
+        points.Add(new Vector3(x, y, 0));
+
+        while (y > 0)
+        {
+            x += velocityX * dt;
+            y += velocityY * dt;
+
+            points.Add(new Vector3(x, y, 0));
+
+            velocityX -= friction * velocityX * dt;
+            velocityY -= (gravity + friction * velocityY) * dt;
+
+            if (points.Count > 500) break; 
+        }
+
+        return points;
+    }
+
     
     public void LaunchBird(float angleDegrees, float stretchLength)
     {
         float angle = angleDegrees * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, stretchLength);
         float adjustedVelocity = velocity * (1 - slingshot.frictionShot + 0.1f);
-
-        // applique la vitesse au rigidbody pour simuler la physique sur la trajectoire
-        // - cela permet de laisser unity gérer la collision avec les autres objects
+        
         float velocityX = useFriction ? adjustedVelocity * Mathf.Cos(angle) : velocity * Mathf.Cos(angle);
         float velocityY = useFriction ? adjustedVelocity * Mathf.Sin(angle) : velocity * Mathf.Sin(angle);
-        rigidBody2D.velocity = new Vector2(velocityX, velocityY);
-    }
-    
-    public void LaunchBirdJump(float angleDegrees, float velocity)
-    {
-        float angle = angleDegrees * Mathf.Deg2Rad;
-        float adjustedVelocity = velocity * (1 - slingshot.frictionShot);
-
+        
         // applique la vitesse au rigidbody pour simuler la physique sur la trajectoire
         // - cela permet de laisser unity gérer la collision avec les autres objects
-        float velocityX = adjustedVelocity * Mathf.Cos(angle);
-        float velocityY = adjustedVelocity * Mathf.Sin(angle);
-        rigidBody2D.velocity = new Vector2(velocityX, velocityY);
+        if (slingshot.GetEnableUnityGravity())
+        {
+            rigidBody2D.velocity = new Vector2(velocityX, velocityY);
+        }
+        else
+        {
+            stockVelocity = new Vector2(velocityX, velocityY);
+            trajectoryFinish = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (slingshot.CanResetCamera && trajectoryPoints.Count > 0 && !trajectoryFinish)
+        {
+            elapsedTime += Time.deltaTime;
+
+            int index = Mathf.Clamp((int)(elapsedTime / 0.02f), 0, trajectoryPoints.Count - 1);
+            transform.position = trajectoryPoints[index];
+            
+            if (index >= trajectoryPoints.Count - 1)
+            {
+                rigidBody2D.gravityScale = 1f;
+                trajectoryFinish = true;
+                detectionObstacle.antiSpam = true;
+
+                if (trajectoryPoints.Count < 2) return;
+                Vector3 lastPoint = trajectoryPoints[^1];
+                Vector3 secondLastPoint = trajectoryPoints[^2];
+
+                float distanceX = lastPoint.x - secondLastPoint.x;
+                float distanceY = lastPoint.y - secondLastPoint.y;
+                float timeDelta = 0.02f;
+                    
+                float velocityX = distanceX / timeDelta;
+                float velocityY = distanceY / timeDelta;
+
+                rigidBody2D.velocity = new Vector2(velocityX, velocityY);
+            }
+        }
     }
 }
