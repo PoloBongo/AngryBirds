@@ -23,6 +23,7 @@ public class BirdTrajectory : MonoBehaviour
     private float elapsedTime = 0f;
     private Vector2 stockVelocity;
     private Vector2 velocityLastPoint;
+    private bool jumpDeclenched;
     public bool trajectoryFinish { get; set; }
 
     public bool GetUseFriction() => useFriction;
@@ -30,6 +31,7 @@ public class BirdTrajectory : MonoBehaviour
     public LineRenderer GetLineRenderer() => lineRenderer;
     private void Start()
     {
+        jumpDeclenched = false;
         gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute (c'est la même valeur soit 9.81f)
         mass = rigidBody2D.mass; // masse de l'oiseau (kg)
         slingshot.frictionShot /= mass;
@@ -50,27 +52,20 @@ public class BirdTrajectory : MonoBehaviour
     
     public void DrawTrajectoryRecurrence()
     {
+        jumpDeclenched = true;
+        
         float angle = slingshot.angleShot * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, slingshot.powerShot);
         float friction = slingshot.frictionShot;
 
-        List<Vector3> points = new List<Vector3>();
+        trajectoryPoints = useFriction ? 
+            ComputeJumpTrajectoryWithFriction(angle, velocity, friction)
+            : ComputeJumpTrajectoryWithoutFriction(angle, velocity);
+        
+        lineRenderer.positionCount = trajectoryPoints.Count;
 
-        if (slingshot.GetEnableUnityGravity())
-        {
-            points = useFriction ? 
-                ComputeJumpTrajectoryWithFriction(angle, velocity, friction)
-                : ComputeJumpTrajectoryWithoutFriction(angle, velocity);
-        }
-        else
-        {
-            trajectoryPoints = useFriction ? 
-                ComputeJumpTrajectoryWithFriction(angle, velocity, friction)
-                : ComputeJumpTrajectoryWithoutFriction(angle, velocity);
-        }
-
-        lineRenderer.positionCount = slingshot.GetEnableUnityGravity() ? points.Count : trajectoryPoints.Count;
-        lineRenderer.SetPositions(slingshot.GetEnableUnityGravity() ? points.ToArray() : trajectoryPoints.ToArray());
+        lineRenderer.positionCount = trajectoryPoints.Count;
+        lineRenderer.SetPositions(trajectoryPoints.ToArray());
         
         LaunchBird(slingshot.angleShot, slingshot.powerShot);
     }
@@ -201,8 +196,13 @@ public class BirdTrajectory : MonoBehaviour
     {
         if (slingshot.CanResetCamera && trajectoryPoints.Count > 0 && !trajectoryFinish && !slingshot.GetEnableUnityGravity())
         {
+            if (jumpDeclenched)
+            {
+                elapsedTime = 0f;
+                jumpDeclenched = false;
+            }
             elapsedTime += Time.deltaTime;
-
+            
             int index = Mathf.Clamp((int)(elapsedTime / 0.02f), 0, trajectoryPoints.Count - 1);
             transform.position = trajectoryPoints[index];
             

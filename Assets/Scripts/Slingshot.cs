@@ -104,11 +104,10 @@ public class Slingshot : MonoBehaviour
             {
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
-                //frictionShot = Mathf.Lerp(1f, 0.01f, Mathf.Pow(Mathf.InverseLerp(1f, 5f, powerShot), 2));
                 IsLaunch = true;
                 if (enableUnityGravity) EnableGravity();
                 ResetStrips();
-                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
+                //gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
             }
         }
     }
