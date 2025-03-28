@@ -3554,7 +3554,7 @@ PrefabInstance:
     - target: {fileID: 4385173790196480158, guid: 833d9e8b90a02454f89195a1ce8508a8,
         type: 3}
       propertyPath: enableUnityGravity
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3642,7 +3642,7 @@ PrefabInstance:
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}
       propertyPath: useFriction
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7474361084017079003, guid: 2b166c4dc6627c1458cdefb3db34a99a,
         type: 3}

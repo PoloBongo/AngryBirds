@@ -5,16 +5,10 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class GestionLaunchBird : MonoBehaviour
 {
-    [Header("Input Actions")]
-    private Camera _camera;
-    
     [Header("Property")]
     [SerializeField] private BirdTrajectory birdTrajectory;
     [SerializeField] private Slingshot slingshot;
     [SerializeField] private RenderTrajectory renderTrajectory;
-    
-    [Header("Bird Property")]
-    private List<Vector3> trajectoryPoints;
 
     private void Awake()
     {
@@ -28,7 +22,6 @@ public class GestionLaunchBird : MonoBehaviour
 
     private void Start()
     {
-        _camera = Camera.main;
         Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
     }
 
