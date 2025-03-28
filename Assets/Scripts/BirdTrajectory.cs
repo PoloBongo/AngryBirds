@@ -23,7 +23,11 @@ public class BirdTrajectory : MonoBehaviour
     private float elapsedTime = 0f;
     private Vector2 stockVelocity;
     private Vector2 velocityLastPoint;
+    
+    [Header("Jump")]
     private bool jumpDeclenched;
+
+    private float durationTpPoints = 0.03f;
     public bool trajectoryFinish { get; set; }
 
     public bool GetUseFriction() => useFriction;
@@ -37,10 +41,10 @@ public class BirdTrajectory : MonoBehaviour
         slingshot.frictionShot /= mass;
     }
 
-    public void DrawTrajectory(float angleDegrees, float stretchLength, bool withFriction)
+    public void DrawTrajectory(float angleDegrees, float l1, bool withFriction)
     {
         float angle = angleDegrees * Mathf.Deg2Rad;
-        float velocity = SpeedInitial(angle, stretchLength);
+        float velocity = SpeedInitial(angle, l1);
 
         trajectoryPoints = withFriction ? 
             ComputeTrajectoryWithFriction(angle, velocity) : 
@@ -53,6 +57,7 @@ public class BirdTrajectory : MonoBehaviour
     public void DrawTrajectoryRecurrence()
     {
         jumpDeclenched = true;
+        durationTpPoints = 0.02f;
         
         float angle = slingshot.angleShot * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, slingshot.powerShot);
@@ -68,6 +73,19 @@ public class BirdTrajectory : MonoBehaviour
         lineRenderer.SetPositions(trajectoryPoints.ToArray());
         
         LaunchBird(slingshot.angleShot, slingshot.powerShot);
+    }
+    
+    public void DrawMultipleTrajectories(float l1)
+    {
+        // On veut dessiner les trajectoires pour des angles de 0 à π/2, donc on va diviser cette plage en 11 angles
+        float alphaMax = Mathf.PI / 2;
+        
+        // Pour chaque angle, on va dessiner une trajectoire
+        for (int i = 0; i <= 10; i++)
+        {
+            float alpha = Mathf.Lerp(0, alphaMax, i / 10f); // Génère les angles de 0 à π/2
+            DrawTrajectory(alpha * Mathf.Rad2Deg, l1, useFriction); // Dessine la trajectoire correspondante
+        }
     }
 
     private float SpeedInitial(float angle, float l1)
@@ -170,10 +188,10 @@ public class BirdTrajectory : MonoBehaviour
     }
 
     
-    public void LaunchBird(float angleDegrees, float stretchLength)
+    public void LaunchBird(float angleDegrees, float l1)
     {
         float angle = angleDegrees * Mathf.Deg2Rad;
-        float velocity = SpeedInitial(angle, stretchLength);
+        float velocity = SpeedInitial(angle, l1);
         float adjustedVelocity = velocity * (1 - slingshot.frictionShot + 0.1f);
         
         float velocityX = useFriction ? adjustedVelocity * Mathf.Cos(angle) : velocity * Mathf.Cos(angle);
@@ -203,7 +221,7 @@ public class BirdTrajectory : MonoBehaviour
             }
             elapsedTime += Time.deltaTime;
             
-            int index = Mathf.Clamp((int)(elapsedTime / 0.02f), 0, trajectoryPoints.Count - 1);
+            int index = Mathf.Clamp((int)(elapsedTime / durationTpPoints), 0, trajectoryPoints.Count - 1);
             transform.position = trajectoryPoints[index];
             
             if (index >= trajectoryPoints.Count - 1)
