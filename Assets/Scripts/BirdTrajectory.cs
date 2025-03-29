@@ -56,8 +56,8 @@ public class BirdTrajectory : MonoBehaviour
 
     public void DrawTrajectory(float angleDegrees, float l1, bool withFriction)
     {
-        float angle = angleDegrees * Mathf.Deg2Rad;
-        float velocity = SpeedInitial(angle, l1);
+       float angle = Mathf.Abs(angleDegrees) * Mathf.Deg2Rad;
+       float velocity = SpeedInitial(angle, l1);
 
         trajectoryPoints = withFriction ? 
             ComputeTrajectoryWithFriction(angle, velocity) : 
@@ -268,18 +268,7 @@ public class BirdTrajectory : MonoBehaviour
             trajectoryFinish = true;
             detectionObstacle.antiSpam = true;
 
-            if (trajectoryPoints.Count < 2) return;
-            Vector3 lastPoint = trajectoryPoints[^1];
-            Vector3 secondLastPoint = trajectoryPoints[^2];
-
-            float distanceX = lastPoint.x - secondLastPoint.x;
-            float distanceY = lastPoint.y - secondLastPoint.y;
-            float timeDelta = 0.02f;
-                    
-            float velocityX = distanceX / timeDelta;
-            float velocityY = distanceY / timeDelta;
-
-            rigidBody2D.velocity = new Vector2(velocityX, velocityY);
+            rigidBody2D.velocity = stockVelocity;
         }
     }
 }
