@@ -10,6 +10,8 @@ public class MapCollision : MonoBehaviour
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
     [SerializeField] private DuplicationBirds duplicationBirds;
 
+    private bool canResetVelocity = false;
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player") && slingshot.CanResetCamera)
@@ -21,6 +23,7 @@ public class MapCollision : MonoBehaviour
             cameraManager.SwitchFollowToIdlePos();
             slingshot.CanResetCamera = false;
             slingshot.SwitchBird();
+            canResetVelocity = true;
 
             foreach (BirdTrajectory bird in duplicationBirds.GetBirdsDuplication())
             {
@@ -28,4 +31,18 @@ public class MapCollision : MonoBehaviour
             }
         }
     }
+    
+    private void FixedUpdate()
+    {
+        if (!canResetVelocity) return;
+        Rigidbody2D rb = manageBirds.Birds[manageBirds.Index - 1].GetComponent<Rigidbody2D>();
+        rb.velocity *= 0.95f;
+        
+        if (rb.velocity.sqrMagnitude < 0.01f)
+        {
+            rb.velocity = Vector2.zero;
+            canResetVelocity = false;
+        }
+    }
+
 }
