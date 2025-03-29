@@ -35,6 +35,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Duplication"",
+                    ""type"": ""Button"",
+                    ""id"": ""14d44890-691e-40e7-b622-f544459c3402"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -48,6 +57,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""932d3b68-77c7-4a1a-b219-15f1ad5cccbf"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Duplication"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,6 +77,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // Actions
         m_Actions = asset.FindActionMap("Actions", throwIfNotFound: true);
         m_Actions_Jump = m_Actions.FindAction("Jump", throwIfNotFound: true);
+        m_Actions_Duplication = m_Actions.FindAction("Duplication", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -119,11 +140,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Actions;
     private List<IActionsActions> m_ActionsActionsCallbackInterfaces = new List<IActionsActions>();
     private readonly InputAction m_Actions_Jump;
+    private readonly InputAction m_Actions_Duplication;
     public struct ActionsActions
     {
         private @Controls m_Wrapper;
         public ActionsActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Jump => m_Wrapper.m_Actions_Jump;
+        public InputAction @Duplication => m_Wrapper.m_Actions_Duplication;
         public InputActionMap Get() { return m_Wrapper.m_Actions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -136,6 +159,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Duplication.started += instance.OnDuplication;
+            @Duplication.performed += instance.OnDuplication;
+            @Duplication.canceled += instance.OnDuplication;
         }
 
         private void UnregisterCallbacks(IActionsActions instance)
@@ -143,6 +169,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Duplication.started -= instance.OnDuplication;
+            @Duplication.performed -= instance.OnDuplication;
+            @Duplication.canceled -= instance.OnDuplication;
         }
 
         public void RemoveCallbacks(IActionsActions instance)
@@ -163,5 +192,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IActionsActions
     {
         void OnJump(InputAction.CallbackContext context);
+        void OnDuplication(InputAction.CallbackContext context);
     }
 }
