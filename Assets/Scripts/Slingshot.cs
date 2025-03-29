@@ -118,6 +118,10 @@ public class Slingshot : MonoBehaviour
             else
             {
                 if (!validateReleased) return;
+
+                if (angleShot >= 15f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.03f;
+                if (angleShot < 15f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.01f;
+                
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
                 IsLaunch = true;

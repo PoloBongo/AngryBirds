@@ -32,7 +32,7 @@ public class BirdTrajectory : MonoBehaviour
     [SerializeField] private bool debugDrawCapacity;
     [SerializeField] private bool isBirdDuplication;
 
-    private float durationTpPoints = 0.03f;
+    public float durationTpPoints { get; set; }
     public bool trajectoryFinish { get; set; }
 
     public bool GetUseFriction() => useFriction;
