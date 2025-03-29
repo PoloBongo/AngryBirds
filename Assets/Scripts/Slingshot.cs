@@ -15,6 +15,8 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private ManageBirds manageBirds;
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
     [SerializeField] private bool enableUnityGravity;
+    [SerializeField] private float minAngle;
+    [SerializeField] private float maxAngle;
 
     private bool validateReleased;
     private bool alreadyHit;
@@ -59,12 +61,14 @@ public class Slingshot : MonoBehaviour
     private float GetSlingshotAngle()
     {
         Vector3 direction = center.position - currentPosition;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        const float minAngle = 0.1f;
-        if (Mathf.Abs(angle) < minAngle)
+        float angle = Vector2.Angle(Vector2.right, direction);
+        
+        if (Vector2.Dot(Vector2.up, direction) < 0)
         {
-            angle = Mathf.Sign(angle) * minAngle;
+            angle = -angle;
         }
+        
+        angle = Mathf.Clamp(angle, minAngle, maxAngle);
 
         return angle;
     }
@@ -81,6 +85,9 @@ public class Slingshot : MonoBehaviour
         gestionLaunchBird.SwitchBirdTarget(player);
         DisableGravity();
         player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        
+        validateReleased = false;
+        alreadyHit = false;
     }
     
     private void Update()
@@ -95,13 +102,15 @@ public class Slingshot : MonoBehaviour
                 mousePosition.z = 10;
                 
                 RaycastHit2D hit = Physics2D.Raycast(camera.ScreenToWorldPoint(mousePosition), Vector2.zero);
-                if (hit.collider && !hit.collider.CompareTag("Player") && !alreadyHit)
+                if (hit.collider && hit.collider.CompareTag("Player") && !alreadyHit)
+                {
+                    alreadyHit = true;
+                }
+                else if (!alreadyHit)
                 {
                     validateReleased = false;
                     return;
                 }
-
-                if (hit.collider && hit.collider.CompareTag("Player")) alreadyHit = true;
 
                 validateReleased = true;
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
@@ -109,6 +118,13 @@ public class Slingshot : MonoBehaviour
                 
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 angleShot = GetSlingshotAngle();
+                
+                if (angleShot < minAngle || angleShot > maxAngle)
+                {
+                    float clampedX = center.position.x + maxLength * Mathf.Cos(angleShot * Mathf.Deg2Rad);
+                    float clampedY = center.position.y + maxLength * Mathf.Sin(angleShot * Mathf.Deg2Rad);
+                    currentPosition = new Vector3(clampedX, clampedY, 0);
+                }
                 
                 manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, manageBirds.Birds[manageBirds.Index].GetUseFriction());
                 player.transform.position = currentPosition;
@@ -119,8 +135,8 @@ public class Slingshot : MonoBehaviour
             {
                 if (!validateReleased) return;
 
-                if (angleShot >= 15f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.03f;
-                if (angleShot < 15f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.01f;
+                if (angleShot >= 25f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.02f;
+                if (angleShot < 25f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.015f;
                 
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();

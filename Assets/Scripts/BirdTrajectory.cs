@@ -56,8 +56,8 @@ public class BirdTrajectory : MonoBehaviour
 
     public void DrawTrajectory(float angleDegrees, float l1, bool withFriction)
     {
-        float angle = angleDegrees * Mathf.Deg2Rad;
-        float velocity = SpeedInitial(angle, l1);
+       float angle = Mathf.Abs(angleDegrees) * Mathf.Deg2Rad;
+       float velocity = SpeedInitial(angle, l1);
 
         trajectoryPoints = withFriction ? 
             ComputeTrajectoryWithFriction(angle, velocity) : 
