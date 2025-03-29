@@ -8,6 +8,7 @@ public class MapCollision : MonoBehaviour
     [SerializeField] private Transform idlePosition;
     [SerializeField] private ManageBirds manageBirds;
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
+    [SerializeField] private DuplicationBirds duplicationBirds;
 
     private void OnCollisionEnter2D(Collision2D other)
     {
@@ -20,6 +21,11 @@ public class MapCollision : MonoBehaviour
             cameraManager.SwitchFollowToIdlePos();
             slingshot.CanResetCamera = false;
             slingshot.SwitchBird();
+
+            foreach (BirdTrajectory bird in duplicationBirds.GetBirdsDuplication())
+            {
+                gestionLaunchBird.ClearDrawTrajectory(bird);
+            }
         }
     }
 }

@@ -1,16 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Jump : MonoBehaviour
+public class Capacities : MonoBehaviour
 {
     private Controls inputAction;
     [SerializeField] private ManageBirds manageBirds;
+    [SerializeField] private DuplicationBirds duplicationBirds;
 
     private void OnEnable()
     {
         inputAction = new Controls();
         inputAction.Enable();
         inputAction.Actions.Jump.performed += OnJumpPerformed;
+        inputAction.Actions.Duplication.performed += OnDuplicationPerformed;
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
@@ -18,5 +20,12 @@ public class Jump : MonoBehaviour
         if (manageBirds.Index >= manageBirds.Birds.Count) return;
 
         manageBirds.Birds[manageBirds.Index].DrawTrajectoryRecurrence();
+    }
+    
+    private void OnDuplicationPerformed(InputAction.CallbackContext context)
+    {
+        if (manageBirds.Index >= manageBirds.Birds.Count) return;
+
+        duplicationBirds.DrawMultipleTrajectories(manageBirds.Birds[manageBirds.Index]);
     }
 }
