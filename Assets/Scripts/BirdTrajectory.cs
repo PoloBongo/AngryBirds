@@ -268,7 +268,18 @@ public class BirdTrajectory : MonoBehaviour
             trajectoryFinish = true;
             detectionObstacle.antiSpam = true;
 
-            rigidBody2D.velocity = stockVelocity;
+            if (trajectoryPoints.Count < 2) return;
+            Vector3 lastPoint = trajectoryPoints[^1];
+            Vector3 secondLastPoint = trajectoryPoints[^2];
+
+            float distanceX = lastPoint.x - secondLastPoint.x;
+            float distanceY = lastPoint.y - secondLastPoint.y;
+            float timeDelta = 0.02f;
+                    
+            float velocityX = distanceX / timeDelta;
+            float velocityY = distanceY / timeDelta;
+
+            rigidBody2D.velocity = new Vector2(velocityX, velocityY);
         }
     }
 }
