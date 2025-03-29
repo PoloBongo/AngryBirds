@@ -16,6 +16,8 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
     [SerializeField] private bool enableUnityGravity;
 
+    private bool validateReleased;
+    private bool alreadyHit;
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
     public float powerShot { get; private set; }
@@ -32,6 +34,8 @@ public class Slingshot : MonoBehaviour
         camera = Camera.main;
         IsLaunch = false;
         CanResetCamera = false;
+        validateReleased = false;
+        alreadyHit = false;
         lineRenderers[0].positionCount = 2;
         lineRenderers[1].positionCount = 2;
         lineRenderers[0].SetPosition(0, stripPositions[0].position);
@@ -76,6 +80,7 @@ public class Slingshot : MonoBehaviour
         cameraManager.SwitchFollowBird(player.transform);
         gestionLaunchBird.SwitchBirdTarget(player);
         DisableGravity();
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
     
     private void Update()
@@ -89,6 +94,16 @@ public class Slingshot : MonoBehaviour
                 Vector3 mousePosition = touch.screenPosition;
                 mousePosition.z = 10;
                 
+                RaycastHit2D hit = Physics2D.Raycast(camera.ScreenToWorldPoint(mousePosition), Vector2.zero);
+                if (hit.collider && !hit.collider.CompareTag("Player") && !alreadyHit)
+                {
+                    validateReleased = false;
+                    return;
+                }
+
+                if (hit.collider && hit.collider.CompareTag("Player")) alreadyHit = true;
+
+                validateReleased = true;
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
                 currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
                 
@@ -102,6 +117,7 @@ public class Slingshot : MonoBehaviour
             }
             else
             {
+                if (!validateReleased) return;
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
                 IsLaunch = true;
