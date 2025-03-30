@@ -3,12 +3,18 @@ using UnityEngine;
 
 public class LitMotionScaleAnimation : MonoBehaviour
 {
+    [Header("Property")]
+    [SerializeField] private float from;
+    [SerializeField] private float to;
+    [SerializeField] private float duration;
+    [SerializeField] private bool bird;
     private void OnEnable()
     {
-        this.transform.localScale = Vector3.zero;
+        transform.localScale = Vector3.zero;
 
-        LMotion.Create(0f, 1f, 0.5f)
-            .Bind(value => this.transform.localScale = Vector3.one * EaseOutBack(value));
+        LMotion.Create(from, to, duration)
+            .WithOnComplete(() => { if (bird) Destroy(gameObject); })
+            .Bind(value => { if (transform) transform.localScale = Vector3.one * EaseOutBack(value); });
     }
     
     private float EaseOutBack(float t)

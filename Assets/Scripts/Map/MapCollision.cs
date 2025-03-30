@@ -39,12 +39,12 @@ public class MapCollision : MonoBehaviour
             slingshot.CanResetCamera = false;
             slingshot.SwitchBird();
             
+            GameManager.GameManagerInstance.CheckLoose();
+            
             foreach (BirdTrajectory bird in duplicationBirds.GetBirdsDuplication())
             {
                 gestionLaunchBird.ClearDrawTrajectory(bird);
             }
-            
-            GameManager.GameManagerInstance.CheckLoose();
             
             canResetVelocity = false;
         }
