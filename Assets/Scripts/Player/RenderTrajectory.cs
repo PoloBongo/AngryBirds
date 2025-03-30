@@ -4,6 +4,7 @@ using UnityEngine;
 public class RenderTrajectory : MonoBehaviour
 {
     [SerializeField] private Slingshot slingshot;
+    [SerializeField] private MapCollision mapCollision;
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private Transform parent;
     [SerializeField] private Transform player;
@@ -13,6 +14,10 @@ public class RenderTrajectory : MonoBehaviour
     private List<GameObject> listPoints = new List<GameObject>();
     private int currentIndex = 0;
     private float lastPointTime;
+    
+    // debug le bird
+    private Vector3 lastPointPosition = Vector3.positiveInfinity;
+    private const float movementThreshold = 0.05f;
 
     private void Start()
     {
@@ -53,9 +58,18 @@ public class RenderTrajectory : MonoBehaviour
     private void ShowPoint()
     {
         GameObject point = listPoints[currentIndex];
+        
+        if (lastPointPosition != Vector3.positiveInfinity &&
+            Vector3.Distance(player.position, lastPointPosition) < movementThreshold)
+        {
+            mapCollision.CanResetVelocity = true;
+            return;
+        }
+        
         point.transform.position = player.position;
         point.SetActive(true);
-
+        lastPointPosition = player.position;
+        
         currentIndex = (currentIndex + 1) % poolSize;
     }
 }
