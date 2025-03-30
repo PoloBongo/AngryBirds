@@ -7,5 +7,4 @@ public class ResetVelocity : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
     }
-    
 }

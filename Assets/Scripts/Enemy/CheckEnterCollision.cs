@@ -1,18 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CheckEnterCollision : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Property")]
+    [SerializeField] private float requiredVelocity = 5f;
+    
+    private void OnCollisionEnter2D(Collision2D collision)
     {
+        Rigidbody2D rb = collision.rigidbody;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (rb != null) 
+        {
+            float impactVelocity = rb.velocity.magnitude;
+            
+            if (impactVelocity >= requiredVelocity)
+            {
+                GameManager.GameManagerInstance.AddBirdKill();
+                Destroy(gameObject);
+            }
+        }
     }
 }

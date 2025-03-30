@@ -258,11 +258,13 @@ public class BirdTrajectory : MonoBehaviour
             jumpDeclenched = false;
         }
         elapsedTime += Time.deltaTime;
+        float t = elapsedTime / durationTpPoints;
+        int index = Mathf.Clamp((int)t, 0, trajectoryPoints.Count - 2);
+
+        float lerpFactor = t - index;
+        transform.position = Vector3.Lerp(trajectoryPoints[index], trajectoryPoints[index + 1], lerpFactor);
             
-        int index = Mathf.Clamp((int)(elapsedTime / durationTpPoints), 0, trajectoryPoints.Count - 1);
-        transform.position = trajectoryPoints[index];
-            
-        if (index >= trajectoryPoints.Count - 1)
+        if (index >= trajectoryPoints.Count - 2)
         {
             rigidBody2D.gravityScale = 1f;
             trajectoryFinish = true;
@@ -274,7 +276,7 @@ public class BirdTrajectory : MonoBehaviour
 
             float distanceX = lastPoint.x - secondLastPoint.x;
             float distanceY = lastPoint.y - secondLastPoint.y;
-            float timeDelta = 0.02f;
+            float timeDelta = durationTpPoints;
                     
             float velocityX = distanceX / timeDelta;
             float velocityY = distanceY / timeDelta;
