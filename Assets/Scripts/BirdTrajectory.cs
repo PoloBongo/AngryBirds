@@ -46,6 +46,8 @@ public class BirdTrajectory : MonoBehaviour
         gravity = Mathf.Abs(Physics2D.gravity.y); // on utilise la gravité d'unity plutôt qu'en brute (c'est la même valeur soit 9.81f)
         mass = rigidBody2D.mass; // masse de l'oiseau (kg)
         slingshot.frictionShot /= mass;
+
+        durationTpPoints = 0.02f;
     }
 
     private Slingshot FindSlingshot()
@@ -90,7 +92,7 @@ public class BirdTrajectory : MonoBehaviour
     
     public void DrawTrajectoryWithLineRenderer(float angleDegrees, float l1, bool withFriction)
     {
-        if (slingshot == null) slingshot = FindSlingshot();
+        if (!slingshot) slingshot = FindSlingshot();
         
         float angle = angleDegrees * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, l1);
@@ -108,7 +110,7 @@ public class BirdTrajectory : MonoBehaviour
 
         canUpdated = true;
         
-        LaunchBird(slingshot.angleShot, slingshot.powerShot);
+        LaunchBird(angleDegrees, l1);
     }
 
     private float SpeedInitial(float angle, float l1)
@@ -257,13 +259,14 @@ public class BirdTrajectory : MonoBehaviour
             elapsedTime = 0f;
             jumpDeclenched = false;
         }
+        
         elapsedTime += Time.deltaTime;
         float t = elapsedTime / durationTpPoints;
         int index = Mathf.Clamp((int)t, 0, trajectoryPoints.Count - 2);
 
         float lerpFactor = t - index;
         transform.position = Vector3.Lerp(trajectoryPoints[index], trajectoryPoints[index + 1], lerpFactor);
-            
+
         if (index >= trajectoryPoints.Count - 2)
         {
             rigidBody2D.gravityScale = 1f;
@@ -277,7 +280,7 @@ public class BirdTrajectory : MonoBehaviour
             float distanceX = lastPoint.x - secondLastPoint.x;
             float distanceY = lastPoint.y - secondLastPoint.y;
             float timeDelta = durationTpPoints;
-                    
+
             float velocityX = distanceX / timeDelta;
             float velocityY = distanceY / timeDelta;
 

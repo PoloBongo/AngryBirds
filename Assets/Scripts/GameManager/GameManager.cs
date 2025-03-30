@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
             ResetStats();
         }
 
-        if (totalBirds == actualBirdsKill)
+        if (actualBirdsKill >= totalBirds)
         {
             victoryPopup.SetActive(true);
             ResetStats();

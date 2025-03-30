@@ -14,6 +14,13 @@ public class Capacities : MonoBehaviour
         inputAction.Actions.Jump.performed += OnJumpPerformed;
         inputAction.Actions.Duplication.performed += OnDuplicationPerformed;
     }
+    
+    private void OnDisable()
+    {
+        inputAction.Actions.Jump.canceled -= OnJumpPerformed;
+        inputAction.Actions.Duplication.canceled -= OnDuplicationPerformed;
+        inputAction.Disable();
+    }
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {

@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public class CheckEnterCollision : MonoBehaviour
 {
     [Header("Property")]
     [SerializeField] private float requiredVelocity = 5f;
+    [SerializeField] private LitMotionScaleAnimation litMotionScaleAnimation;
+    [SerializeField] private AudioSource audioSource;
     
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -15,9 +18,14 @@ public class CheckEnterCollision : MonoBehaviour
             
             if (impactVelocity >= requiredVelocity)
             {
-                GameManager.GameManagerInstance.AddBirdKill();
-                Destroy(gameObject);
+                litMotionScaleAnimation.enabled = true;
+                audioSource.Play();
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.GameManagerInstance.AddBirdKill();
     }
 }

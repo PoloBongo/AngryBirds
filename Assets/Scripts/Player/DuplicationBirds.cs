@@ -21,7 +21,7 @@ public class DuplicationBirds : MonoBehaviour
         {
             if (i == 0) continue;
             GameObject birdTrajectory = Instantiate(birdDuplication);
-            birdTrajectory.transform.position = bird.transform.position;
+            if (bird) birdTrajectory.transform.position = bird.transform.position;
             float alpha = Mathf.Lerp(0, alphaMax, i / 10f); // Génère les angles de 0 à π/2
             
             BirdTrajectory birdTrajectoryScript = birdTrajectory.GetComponent<BirdTrajectory>();

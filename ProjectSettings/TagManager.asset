@@ -8,6 +8,7 @@ TagManager:
   - Slingshot
   - Loose
   - Victory
+  - BirdCapacity
   layers:
   - Default
   - TransparentFX
