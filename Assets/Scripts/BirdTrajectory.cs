@@ -16,13 +16,16 @@ public class BirdTrajectory : MonoBehaviour
     [SerializeField] private Slingshot slingshot;
     [SerializeField] private DetectionObstacle detectionObstacle;
 
-    private const int numPoints = 100;
+    private const int numPoints = 200;
     [SerializeField] private bool useFriction = false;
 
     private List<Vector3> trajectoryPoints;
     private float elapsedTime = 0f;
     private Vector2 stockVelocity;
     private Vector2 velocityLastPoint;
+    
+    float baseSpeed = 7000f;
+    float maxSpeed = 20000f;
     
     [Header("Jump")]
     private bool jumpDeclenched;
@@ -47,7 +50,7 @@ public class BirdTrajectory : MonoBehaviour
         mass = rigidBody2D.mass; // masse de l'oiseau (kg)
         slingshot.frictionShot /= mass;
 
-        durationTpPoints = 0.02f;
+        durationTpPoints = 0.1f;
     }
 
     private Slingshot FindSlingshot()
@@ -57,9 +60,9 @@ public class BirdTrajectory : MonoBehaviour
     }
 
     public void DrawTrajectory(float angleDegrees, float l1, bool withFriction)
-    {
-       float angle = Mathf.Abs(angleDegrees) * Mathf.Deg2Rad;
-       float velocity = SpeedInitial(angle, l1);
+    { 
+        float angle = angleDegrees * Mathf.Deg2Rad;
+        float velocity = SpeedInitial(angle, l1);
 
         trajectoryPoints = withFriction ? 
             ComputeTrajectoryWithFriction(angle, velocity) : 
@@ -72,7 +75,8 @@ public class BirdTrajectory : MonoBehaviour
     public void DrawTrajectoryRecurrence()
     {
         jumpDeclenched = true;
-        durationTpPoints = 0.015f;
+        baseSpeed = 1000f;
+        maxSpeed = 10000f;
         
         float angle = slingshot.angleShot * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, slingshot.powerShot);
@@ -124,8 +128,9 @@ public class BirdTrajectory : MonoBehaviour
     {
         List<Vector3> points = new List<Vector3>(); // stock le x,y
         Vector3 startPosition = transform.position;
-        
-        float timeMax = (2 * velocity * Mathf.Sin(angle)) / gravity; // temps d'impact avec le sol
+
+        float timeMax = (velocity * Mathf.Sin(angle) +
+                         Mathf.Sqrt(Mathf.Pow(velocity * Mathf.Sin(angle), 2) + 2 * gravity * startPosition.y));
         float timeStep = timeMax / numPoints; // divise le temps entre chaque point de la trajectoire
 
         for (int i = 0; i < numPoints; i++)
@@ -261,11 +266,23 @@ public class BirdTrajectory : MonoBehaviour
         }
         
         elapsedTime += Time.deltaTime;
+
+        float totalDistance = 0;
+        for (int i = 0; i < trajectoryPoints.Count - 1; i++) {
+            totalDistance += Vector3.Distance(trajectoryPoints[i], trajectoryPoints[i + 1]);
+        }
+
+        float speed = Mathf.Lerp(baseSpeed, maxSpeed, totalDistance / 50f);
+
+        durationTpPoints = totalDistance / speed; 
+
         float t = elapsedTime / durationTpPoints;
         int index = Mathf.Clamp((int)t, 0, trajectoryPoints.Count - 2);
 
         float lerpFactor = t - index;
         transform.position = Vector3.Lerp(trajectoryPoints[index], trajectoryPoints[index + 1], lerpFactor);
+
+
 
         if (index >= trajectoryPoints.Count - 2)
         {
