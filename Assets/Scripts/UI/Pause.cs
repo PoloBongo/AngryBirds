@@ -9,6 +9,7 @@ public class Pause : MonoBehaviour
     public GameObject pauseCanvas; // Le canvas de pause
     public Button resumeButton; // Le bouton pour reprendre le jeu
     public Button quitButton; // Le bouton pour quitter le jeu
+    [SerializeField] private bool showInfo;
 
     private bool isPaused = false;
 
@@ -48,5 +49,11 @@ public class Pause : MonoBehaviour
     private void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ShowInfo(GameObject info)
+    {
+        showInfo = !showInfo;
+        info.SetActive(showInfo);
     }
 }

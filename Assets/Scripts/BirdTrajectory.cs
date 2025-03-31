@@ -17,7 +17,6 @@ public class BirdTrajectory : MonoBehaviour
     [SerializeField] private DetectionObstacle detectionObstacle;
 
     private const int numPoints = 200;
-    [SerializeField] private bool useFriction = false;
 
     private List<Vector3> trajectoryPoints;
     private float elapsedTime = 0f;
@@ -31,14 +30,11 @@ public class BirdTrajectory : MonoBehaviour
     private bool jumpDeclenched;
     private bool canUpdated = false;
     
-    [Header("Capacity")]
-    [SerializeField] private bool debugDrawCapacity;
+    [Header("Information")]
     [SerializeField] private bool isBirdDuplication;
 
     public float durationTpPoints { get; set; }
     public bool trajectoryFinish { get; set; }
-
-    public bool GetUseFriction() => useFriction;
     public Vector2 GetStockVelocity() => stockVelocity;
     public LineRenderer GetLineRenderer() => lineRenderer;
     private void Start()
@@ -51,6 +47,9 @@ public class BirdTrajectory : MonoBehaviour
         slingshot.frictionShot /= mass;
 
         durationTpPoints = 0.1f;
+        
+        baseSpeed = 7000f;
+        maxSpeed = 20000f;
     }
 
     private Slingshot FindSlingshot()
@@ -60,7 +59,10 @@ public class BirdTrajectory : MonoBehaviour
     }
 
     public void DrawTrajectory(float angleDegrees, float l1, bool withFriction)
-    { 
+    {
+        baseSpeed = withFriction ? 1000f : 7000f;
+        maxSpeed = withFriction ? 10000f : 20000f;
+        
         float angle = angleDegrees * Mathf.Deg2Rad;
         float velocity = SpeedInitial(angle, l1);
 
@@ -82,7 +84,7 @@ public class BirdTrajectory : MonoBehaviour
         float velocity = SpeedInitial(angle, slingshot.powerShot);
         float friction = slingshot.frictionShot;
 
-        trajectoryPoints = useFriction ? 
+        trajectoryPoints = GameManager.GameManagerInstance.useFriction ? 
             ComputeJumpTrajectoryWithFriction(angle, velocity, friction)
             : ComputeJumpTrajectoryWithoutFriction(angle, velocity);
         
@@ -106,7 +108,7 @@ public class BirdTrajectory : MonoBehaviour
             ComputeTrajectoryWithFriction(angle, velocity, true) : 
             ComputeTrajectoryWithoutFriction(angle, velocity, true);
 
-        if (debugDrawCapacity)
+        if (GameManager.GameManagerInstance.debugDraw)
         {
             lineRenderer.positionCount = trajectoryPoints.Count;
             lineRenderer.SetPositions(trajectoryPoints.ToArray());
@@ -117,6 +119,16 @@ public class BirdTrajectory : MonoBehaviour
         LaunchBird(angleDegrees, l1);
     }
 
+    /// \brief Calcule la vitesse initiale d'éjection.
+    /// \param angle Angle de lancement en radians.
+    /// \param l1 Longueur du ressort.
+    /// \return La vitesse initiale.
+    ///
+    /// La formule utilisée est :
+    /// \f[
+    /// v_{eject} = l1 \times \sqrt{\frac{spring}{mass}} \times 
+    /// \sqrt{1 - \left(\frac{mass \times |g| \times \sin(angle)}{spring \times l1}\right)^2}
+    /// \f]
     private float SpeedInitial(float angle, float l1)
     {
         var v_eject = l1 * Mathf.Sqrt(spring / mass) *
@@ -124,43 +136,74 @@ public class BirdTrajectory : MonoBehaviour
         return v_eject;
     }
 
+    /// \brief Calcule la trajectoire d'un projectile sans frottement.
+    /// \param angle Angle de lancement en radians.
+    /// \param velocity Vitesse initiale.
+    /// \param isForCapacities Indique si la trajectoire doit être ajustée à la position initiale.
+    /// \return Une liste de points représentant la trajectoire.
+    ///
+    /// La position du projectile est donnée par les équations :
+    /// \f[
+    /// x = v_0 \cos(\theta) t
+    /// \f]
+    /// \f[
+    /// y = v_0 \sin(\theta) t - \frac{1}{2} g t^2
+    /// \f]
     private List<Vector3> ComputeTrajectoryWithoutFriction(float angle, float velocity, bool isForCapacities = false)
     {
-        List<Vector3> points = new List<Vector3>(); // stock le x,y
+        List<Vector3> points = new List<Vector3>();
         Vector3 startPosition = transform.position;
 
         float timeMax = (velocity * Mathf.Sin(angle) +
                          Mathf.Sqrt(Mathf.Pow(velocity * Mathf.Sin(angle), 2) + 2 * gravity * startPosition.y));
-        float timeStep = timeMax / numPoints; // divise le temps entre chaque point de la trajectoire
+        float timeStep = timeMax / numPoints;
 
         for (int i = 0; i < numPoints; i++)
         {
-            float t = i * timeStep; // actuel temps
-            float x = velocity * Mathf.Cos(angle) * t; // pos horizontal
-            float y = velocity * Mathf.Sin(angle) * t - 0.5f * gravity * t * t; // pos vertical
-            points.Add(new Vector3(isForCapacities ? startPosition.x + x : x, isForCapacities ? startPosition.y + y : y, 0)); // stock les points x,y pour les draw ensuite
+            float t = i * timeStep;
+            float x = velocity * Mathf.Cos(angle) * t;
+            float y = velocity * Mathf.Sin(angle) * t - 0.5f * gravity * t * t;
+            
+            if (float.IsNaN(x) || float.IsNaN(y)) continue;
+            points.Add(new Vector3(isForCapacities ? startPosition.x + x : x, isForCapacities ? startPosition.y + y : y, 0));
         }
 
         return points;
     }
 
+    /// \brief Calcule la trajectoire d'un projectile avec frottement.
+    /// \param angle Angle de lancement en radians.
+    /// \param velocity Vitesse initiale.
+    /// \param isForCapacities Indique si la trajectoire doit être ajustée à la position initiale.
+    /// \return Une liste de points représentant la trajectoire.
+    ///
+    /// La trajectoire avec frottement suit ces équations :
+    /// \f[
+    /// x = \frac{\lambda_x}{k} (1 - e^{-k t})
+    /// \f]
+    /// \f[
+    /// y = \frac{\lambda_y}{k} (1 - e^{-k t}) - \frac{g}{k} t
+    /// \f]
+    /// Où \( \lambda_x = v_0 \cos(\theta) \) et \( \lambda_y = v_0 \sin(\theta) + \frac{g}{k} \).
     private List<Vector3> ComputeTrajectoryWithFriction(float angle, float velocity, bool isForCapacities = false)
     {
-        List<Vector3> points = new List<Vector3>(); // stock le x,y
+        List<Vector3> points = new List<Vector3>();
         Vector3 startPosition = transform.position;
-        
-        float lambdaX = velocity * Mathf.Cos(angle); // vitesse horizontal
-        float lambdaY = velocity * Mathf.Sin(angle) + gravity / slingshot.frictionShot; // vitesse vertical en prenant compte de la résistance de l'air
-        float timeMax = 2 * velocity * Mathf.Sin(angle) / gravity; // temps d'impact avec le sol
-        float timeStep = timeMax / numPoints; // divise le temps entre chaque point de la trajectoire
-        
+
+        float lambdaX = velocity * Mathf.Cos(angle);
+        float lambdaY = velocity * Mathf.Sin(angle) + gravity / slingshot.frictionShot;
+        float timeMax = (velocity * Mathf.Sin(angle) +
+                         Mathf.Sqrt(Mathf.Pow(velocity * Mathf.Sin(angle), 2) + 2 * gravity * startPosition.y));
+        float timeStep = timeMax / numPoints;
+
         for (int i = 0; i < numPoints; i++)
         {
             float t = i * timeStep;
-            float x = (lambdaX / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t)); // pos horizontal
-            float y = (lambdaY / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t)) - (gravity / slingshot.frictionShot) * t; // pos vertical
+            float x = (lambdaX / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t));
+            float y = (lambdaY / slingshot.frictionShot) * (1 - Mathf.Exp(-slingshot.frictionShot * t)) - (gravity / slingshot.frictionShot) * t;
             
-            points.Add(new Vector3(isForCapacities ? startPosition.x + x : x, isForCapacities ? startPosition.y + y : y, 0)); // stock les points x,y pour les draw ensuite
+            if (float.IsNaN(x) || float.IsNaN(y)) continue;
+            points.Add(new Vector3(isForCapacities ? startPosition.x + x : x, isForCapacities ? startPosition.y + y : y, 0));
         }
 
         return points;
@@ -230,12 +273,12 @@ public class BirdTrajectory : MonoBehaviour
         float velocity = SpeedInitial(angle, l1);
         float adjustedVelocity = velocity * (1 - slingshot.frictionShot + 0.1f);
         
-        float velocityX = useFriction ? adjustedVelocity * Mathf.Cos(angle) : velocity * Mathf.Cos(angle);
-        float velocityY = useFriction ? adjustedVelocity * Mathf.Sin(angle) : velocity * Mathf.Sin(angle);
+        float velocityX = GameManager.GameManagerInstance.useFriction ? adjustedVelocity * Mathf.Cos(angle) : velocity * Mathf.Cos(angle);
+        float velocityY = GameManager.GameManagerInstance.useFriction ? adjustedVelocity * Mathf.Sin(angle) : velocity * Mathf.Sin(angle);
         
         // applique la vitesse au rigidbody pour simuler la physique sur la trajectoire
         // - cela permet de laisser unity gérer la collision avec les autres objects
-        if (slingshot.GetEnableUnityGravity())
+        if (GameManager.GameManagerInstance.enableGravity)
         {
             rigidBody2D.velocity = new Vector2(velocityX, velocityY);
         }
@@ -251,12 +294,12 @@ public class BirdTrajectory : MonoBehaviour
         if (isBirdDuplication)
         {
             if (trajectoryPoints.Count <= 0 || trajectoryFinish ||
-                slingshot.GetEnableUnityGravity() || !canUpdated) return;
+                GameManager.GameManagerInstance.enableGravity || !canUpdated) return;
         }
         else
         {
             if (!slingshot.CanResetCamera || trajectoryPoints.Count <= 0 || trajectoryFinish ||
-                slingshot.GetEnableUnityGravity()) return;
+                GameManager.GameManagerInstance.enableGravity) return;
         }
         
         if (jumpDeclenched)

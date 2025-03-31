@@ -14,20 +14,18 @@ public class Slingshot : MonoBehaviour
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private ManageBirds manageBirds;
     [SerializeField] private GestionLaunchBird gestionLaunchBird;
-    [SerializeField] private bool enableUnityGravity;
     [SerializeField] private float minAngle;
     [SerializeField] private float maxAngle;
 
     private bool validateReleased;
     private bool alreadyHit;
+    public bool isAim { get; private set; }
     private Vector3 currentPosition { get; set; }
     public float angleShot { get; private set; }
     public float powerShot { get; private set; }
     public float frictionShot { get; set; } // coeff de frottement divisé par la masse
     public bool IsLaunch { get; set; }
     public bool CanResetCamera { get; set; }
-    
-    public bool GetEnableUnityGravity() => enableUnityGravity;
     
     private new Camera camera;
     
@@ -37,6 +35,7 @@ public class Slingshot : MonoBehaviour
         IsLaunch = false;
         CanResetCamera = false;
         validateReleased = false;
+        isAim = false;
         GameManager.GameManagerInstance.canPlay = true;
         alreadyHit = false;
         lineRenderers[0].positionCount = 2;
@@ -47,6 +46,8 @@ public class Slingshot : MonoBehaviour
 
         DisableGravity();
         ResetStrips();
+
+        if (manageBirds.Index == 0) GameManager.GameManagerInstance.SetActualBirdsKill(0);
     }
 
     private void DisableGravity()
@@ -82,6 +83,7 @@ public class Slingshot : MonoBehaviour
         
         validateReleased = false;
         alreadyHit = false;
+        isAim = false;
         GameManager.GameManagerInstance.canPlay = true;
     }
     
@@ -107,6 +109,7 @@ public class Slingshot : MonoBehaviour
                     return;
                 }
 
+                isAim = true;
                 validateReleased = true;
                 currentPosition = camera.ScreenToWorldPoint(mousePosition);
                 currentPosition = center.position + Vector3.ClampMagnitude(currentPosition - center.position, maxLength);
@@ -114,7 +117,7 @@ public class Slingshot : MonoBehaviour
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 angleShot = GetSlingshotAngle();
                 
-                manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, manageBirds.Birds[manageBirds.Index].GetUseFriction());
+                manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, GameManager.GameManagerInstance.useFriction);
                 player.transform.position = currentPosition;
                 
                 SetStrips(currentPosition);
@@ -123,11 +126,12 @@ public class Slingshot : MonoBehaviour
             {
                 if (!validateReleased) return;
                 
-                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
+                if (!GameManager.GameManagerInstance.debugDraw) gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
                 IsLaunch = true;
-                if (enableUnityGravity) EnableGravity();
+                isAim = false;
+                if (GameManager.GameManagerInstance.enableGravity) EnableGravity();
                 ResetStrips();
                 GameManager.GameManagerInstance.canPlay = false;
             }

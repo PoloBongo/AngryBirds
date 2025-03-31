@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +13,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject loosePopup;
     [SerializeField] private GameObject victoryPopup;
     
+    private Coroutine checkCoroutine;
+    
     public bool canPlay {get; set;}
+    public bool debugDraw {get; set;}
+    public bool enableGravity {get; set;}
+    public bool useFriction {get; set;}
+    
     private void Awake()
     {
         if (GameManagerInstance != null && GameManagerInstance != this)
@@ -24,6 +31,10 @@ public class GameManager : MonoBehaviour
             GameManagerInstance = this;
             DontDestroyOnLoad(GameManagerInstance);
         }
+        
+        enableGravity = true;
+        debugDraw = false;
+        useFriction = false;
     }
 
     private void Start()
@@ -67,29 +78,43 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    
     public void CheckLoose()
+    {
+        checkCoroutine ??= StartCoroutine(CheckLooseCoroutine());
+    }
+
+    private IEnumerator CheckLooseCoroutine()
     {
         if (!loosePopup) FoundLoosePopup();
         if (!victoryPopup) FoundVictoryPopup();
         
         numbersOfTry--;
+        
+        yield return new WaitForSeconds(1f);
+        
         if (numbersOfTry <= 0 && actualBirdsKill != totalBirds)
         {
             loosePopup.SetActive(true);
             ResetStats();
         }
-
-        if (actualBirdsKill >= totalBirds)
+        else if (actualBirdsKill >= totalBirds)
         {
             victoryPopup.SetActive(true);
             ResetStats();
         }
+
+        checkCoroutine = null;
     }
 
     public void AddBirdKill()
     {
         actualBirdsKill++;
+    }
+    
+    public void SetActualBirdsKill(int _amount)
+    {
+        actualBirdsKill = _amount;
     }
 
     private void ResetStats()
