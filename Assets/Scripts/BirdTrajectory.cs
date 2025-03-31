@@ -325,8 +325,6 @@ public class BirdTrajectory : MonoBehaviour
         float lerpFactor = t - index;
         transform.position = Vector3.Lerp(trajectoryPoints[index], trajectoryPoints[index + 1], lerpFactor);
 
-
-
         if (index >= trajectoryPoints.Count - 2)
         {
             rigidBody2D.gravityScale = 1f;
