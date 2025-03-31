@@ -33,7 +33,6 @@ public class GestionLaunchBird : MonoBehaviour
     {
         if (slingshot.IsLaunch)
         {
-            //birdTrajectory.DrawTrajectory(slingshot.angleShot, slingshot.powerShot, birdTrajectory.GetUseFriction());
             birdTrajectory.LaunchBird(slingshot.angleShot, slingshot.powerShot);
                     
             // reset pour le prochain lancer

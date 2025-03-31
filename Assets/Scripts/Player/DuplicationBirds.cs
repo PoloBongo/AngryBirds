@@ -25,7 +25,7 @@ public class DuplicationBirds : MonoBehaviour
             float alpha = Mathf.Lerp(0, alphaMax, i / 10f); // Génère les angles de 0 à π/2
             
             BirdTrajectory birdTrajectoryScript = birdTrajectory.GetComponent<BirdTrajectory>();
-            birdTrajectoryScript.DrawTrajectoryWithLineRenderer(alpha * Mathf.Rad2Deg, l1, bird.GetUseFriction());
+            birdTrajectoryScript.DrawTrajectoryWithLineRenderer(alpha * Mathf.Rad2Deg, l1, GameManager.GameManagerInstance.useFriction);
             if (birdTrajectoryScript) birdsDuplication.Add(birdTrajectoryScript);
         }
     }
