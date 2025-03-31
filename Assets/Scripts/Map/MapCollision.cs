@@ -26,7 +26,7 @@ public class MapCollision : MonoBehaviour
     {
         if (!canResetVelocity) return;
         Rigidbody2D rb = manageBirds.Birds[manageBirds.Index].GetComponent<Rigidbody2D>();
-        rb.velocity *= 0.95f;
+        rb.velocity *= 0.90f;
         
         if (rb.velocity.sqrMagnitude < 0.01f)
         {

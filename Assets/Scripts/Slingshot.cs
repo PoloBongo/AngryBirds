@@ -37,6 +37,7 @@ public class Slingshot : MonoBehaviour
         IsLaunch = false;
         CanResetCamera = false;
         validateReleased = false;
+        GameManager.GameManagerInstance.canPlay = true;
         alreadyHit = false;
         lineRenderers[0].positionCount = 2;
         lineRenderers[1].positionCount = 2;
@@ -61,15 +62,8 @@ public class Slingshot : MonoBehaviour
     private float GetSlingshotAngle()
     {
         Vector3 direction = center.position - currentPosition;
-        float angle = Vector2.Angle(Vector2.right, direction);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         
-        if (Vector2.Dot(Vector2.up, direction) < 0)
-        {
-            angle = -angle;
-        }
-        
-        angle = Mathf.Clamp(angle, minAngle, maxAngle);
-
         return angle;
     }
 
@@ -88,11 +82,12 @@ public class Slingshot : MonoBehaviour
         
         validateReleased = false;
         alreadyHit = false;
+        GameManager.GameManagerInstance.canPlay = true;
     }
     
     private void Update()
     {
-        if (manageBirds.Index >= manageBirds.Birds.Count) return;
+        if (manageBirds.Index >= manageBirds.Birds.Count || !GameManager.GameManagerInstance.canPlay) return;
         
         foreach (var touch in Touch.activeTouches)
         {
@@ -119,13 +114,6 @@ public class Slingshot : MonoBehaviour
                 powerShot = GetLineRendererLength(lineRenderers[0]) * powerMultiplication;
                 angleShot = GetSlingshotAngle();
                 
-                if (angleShot < minAngle || angleShot > maxAngle)
-                {
-                    float clampedX = center.position.x + maxLength * Mathf.Cos(angleShot * Mathf.Deg2Rad);
-                    float clampedY = center.position.y + maxLength * Mathf.Sin(angleShot * Mathf.Deg2Rad);
-                    currentPosition = new Vector3(clampedX, clampedY, 0);
-                }
-                
                 manageBirds.Birds[manageBirds.Index].DrawTrajectory(angleShot, powerShot, manageBirds.Birds[manageBirds.Index].GetUseFriction());
                 player.transform.position = currentPosition;
                 
@@ -134,16 +122,14 @@ public class Slingshot : MonoBehaviour
             else
             {
                 if (!validateReleased) return;
-
-                if (angleShot >= 25f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.02f;
-                if (angleShot < 25f) manageBirds.Birds[manageBirds.Index].durationTpPoints = 0.015f;
                 
+                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
                 CanResetCamera = true;
                 cameraManager.SwitchFollowToPlayer();
                 IsLaunch = true;
                 if (enableUnityGravity) EnableGravity();
                 ResetStrips();
-                gestionLaunchBird.ClearDrawTrajectory(manageBirds.Birds[manageBirds.Index]);
+                GameManager.GameManagerInstance.canPlay = false;
             }
         }
     }

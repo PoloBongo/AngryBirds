@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [Header("Popup")]
     [SerializeField] private GameObject loosePopup;
     [SerializeField] private GameObject victoryPopup;
+    
+    public bool canPlay {get; set;}
     private void Awake()
     {
         if (GameManagerInstance != null && GameManagerInstance != this)
