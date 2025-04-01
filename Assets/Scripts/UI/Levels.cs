@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class Levels : MonoBehaviour
     [SerializeField] private GameObject gravity;
     [SerializeField] private GameObject debug;
     [SerializeField] private GameObject friction;
+    [SerializeField] private CameraManager cameraManager;
 
     private void Start()
     {
@@ -76,5 +78,10 @@ public class Levels : MonoBehaviour
     public void UseFrictionBool()
     {
         GameManager.GameManagerInstance.useFriction = !GameManager.GameManagerInstance.useFriction;
+    }
+
+    public void FocusPlayer()
+    {
+        cameraManager.SwitchFollowToPlayer();
     }
 }
