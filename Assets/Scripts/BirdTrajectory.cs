@@ -118,37 +118,14 @@ public class BirdTrajectory : MonoBehaviour
         
         LaunchBird(angleDegrees, l1);
     }
-
-    /// \brief Calcule la vitesse initiale d'éjection.
-    /// \param angle Angle de lancement en radians.
-    /// \param l1 Longueur du ressort.
-    /// \return La vitesse initiale.
-    ///
-    /// La formule utilisée est :
-    /// \f[
-    /// v_{eject} = l1 \times \sqrt{\frac{spring}{mass}} \times 
-    /// \sqrt{1 - \left(\frac{mass \times |g| \times \sin(angle)}{spring \times l1}\right)^2}
-    /// \f]
+    
     private float SpeedInitial(float angle, float l1)
     {
         var v_eject = l1 * Mathf.Sqrt(spring / mass) *
                       Mathf.Sqrt(1 - Mathf.Pow(mass * Mathf.Abs(Physics2D.gravity.y) * Mathf.Sin(angle) / (spring * l1), 2));
         return v_eject;
     }
-
-    /// \brief Calcule la trajectoire d'un projectile sans frottement.
-    /// \param angle Angle de lancement en radians.
-    /// \param velocity Vitesse initiale.
-    /// \param isForCapacities Indique si la trajectoire doit être ajustée à la position initiale.
-    /// \return Une liste de points représentant la trajectoire.
-    ///
-    /// La position du projectile est donnée par les équations :
-    /// \f[
-    /// x = v_0 \cos(\theta) t
-    /// \f]
-    /// \f[
-    /// y = v_0 \sin(\theta) t - \frac{1}{2} g t^2
-    /// \f]
+    
     private List<Vector3> ComputeTrajectoryWithoutFriction(float angle, float velocity, bool isForCapacities = false)
     {
         List<Vector3> points = new List<Vector3>();
@@ -170,21 +147,7 @@ public class BirdTrajectory : MonoBehaviour
 
         return points;
     }
-
-    /// \brief Calcule la trajectoire d'un projectile avec frottement.
-    /// \param angle Angle de lancement en radians.
-    /// \param velocity Vitesse initiale.
-    /// \param isForCapacities Indique si la trajectoire doit être ajustée à la position initiale.
-    /// \return Une liste de points représentant la trajectoire.
-    ///
-    /// La trajectoire avec frottement suit ces équations :
-    /// \f[
-    /// x = \frac{\lambda_x}{k} (1 - e^{-k t})
-    /// \f]
-    /// \f[
-    /// y = \frac{\lambda_y}{k} (1 - e^{-k t}) - \frac{g}{k} t
-    /// \f]
-    /// Où \( \lambda_x = v_0 \cos(\theta) \) et \( \lambda_y = v_0 \sin(\theta) + \frac{g}{k} \).
+    
     private List<Vector3> ComputeTrajectoryWithFriction(float angle, float velocity, bool isForCapacities = false)
     {
         List<Vector3> points = new List<Vector3>();
